@@ -10,12 +10,11 @@ jobs:
      steps: 
        - name: Checkout the code
          uses: actions/checkout@v3
-       - name: Setup JDK 17 (Temurin)
+       - name: Setup JDK 21 (Temurin)
          uses: actions/setup-java@v2
          with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
-
        - name: Cache Gradle dependencies
          uses: actions/cache@v3
          with:
