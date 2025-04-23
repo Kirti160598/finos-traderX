@@ -1,4 +1,4 @@
-name: Java CICD with maven
+name: Java CICD with gradle
 on:
   push: 
      branches: ["main"]
