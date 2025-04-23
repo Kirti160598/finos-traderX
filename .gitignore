@@ -1,3 +1,6 @@
+finos-traderX/.github/workflows/build-and-publish.yml
+finos-traderX/.github/workflows/security.yml
+finos-traderX/.github/workflows/license-scanning-node.yml
 HELP.md
 .gradle
 build/
