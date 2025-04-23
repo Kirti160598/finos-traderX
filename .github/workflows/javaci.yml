@@ -15,14 +15,16 @@ jobs:
          with:
           java-version: '11'
           distribution: 'temurin'  # Updated distribution name'
-       - name: Cache Maven packages
+       - name: Cache Gradle dependencies
          uses: actions/cache@v3
          with:
-           path: ~/.m2
-           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-           restore-keys: |
-             ${{ runner.os }}-maven-
-       - name: Build with Maven
-         run: mvn clean install
+          path: ~/.gradle/wrapper/cache/**/*  # Cache Gradle wrapper cache
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}  # Hash based on build.gradle file
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+       - name: Build with Gradle
+         run: ./gradlew build  # Build the project with Gradle
+
        - name: Run tests
-         run: mvn test
+         run: ./gradlew test  # Run tests with Gradle
