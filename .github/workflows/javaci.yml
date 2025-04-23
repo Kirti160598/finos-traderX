@@ -10,11 +10,11 @@ jobs:
      steps: 
        - name: Checkout the code
          uses: actions/checkout@v3
-       - name: Setup JDK 17
-         uses: actions/setup-java@v4
+       - name: Setup JDK 11
+         uses: actions/setup-java@v2
          with:
-           java-version: '17'
-           distribution: 'termurin'
+           java-version: '11'
+           distribution: 'adoptopenjdk'
        - name: Cache Maven packages
          uses: actions/cache@v3
          with:
