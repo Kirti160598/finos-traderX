@@ -12,6 +12,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Kirti160598/finos-traderX.git'
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t $DOCKER_IMAGE .'
@@ -24,7 +25,7 @@ pipeline {
                     sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                     sh 'docker push $DOCKER_IMAGE'
                 }
-            
+            }  // ✅ <-- This closing brace was missing
         }
 
         stage('Update GitOps Deployment YAML') {
@@ -36,9 +37,8 @@ pipeline {
                     git add deployment.yaml
                     git commit -m "Update image to $DOCKER_IMAGE"
                     git push origin main
-        '''
-    }
-}
+                '''
+            }
         }
-    
+    }
 }
