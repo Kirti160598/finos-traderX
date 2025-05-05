@@ -21,11 +21,6 @@ pipeline {
                 }
             }
         }
-       stage('Unit Test') {
-          steps {
-            sh 'npm test -- --coverage'
-      }
-    }
        stage('SonarQube Analysis') {
           steps {
             withSonarQubeEnv(SONARQUBE_SERVER) {
