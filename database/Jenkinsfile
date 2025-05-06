@@ -36,6 +36,7 @@ pipeline {
                             -Dsonar.projectName=$SONAR_PROJECT_NAME 
                             -Dsonar.projectVersion=$SONAR_PROJECT_VERSION 
                             -Dsonar.projectBaseDir=database 
+                            -Dsonar.java.binaries=build/classes/java/main  // Specify the path for compiled classes
                             -Dsonar.login=$SONAR_TOKEN 
                             -X
                         """
