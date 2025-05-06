@@ -21,6 +21,11 @@ pipeline {
                 }
             }
         }
+       stage("Print working dir") {
+           steps {
+               sh '$PWD'
+           }
+       }
        stage('SonarQube Analysis') {
           steps {
             withSonarQubeEnv(SONARQUBE_SERVER) {
