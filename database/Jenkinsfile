@@ -27,7 +27,7 @@ pipeline {
         }
         stage('SonarQube Analysis') {
            steps {
-            withSonarQubeEnv('SONARQUBE_SERVER') {
+            withSonarQubeEnv(SONARQUBE_SERVER) {
                 script {
                     def scannerHome = tool 'DefaultSonarScanner'
                     // Run sonar-scanner with properties such as project key, name, version, and authentication token
