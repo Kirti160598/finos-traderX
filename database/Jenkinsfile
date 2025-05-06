@@ -36,7 +36,7 @@ pipeline {
                             -Dsonar.projectName=$SONAR_PROJECT_NAME ^
                             -Dsonar.projectVersion=$SONAR_PROJECT_VERSION ^
                             -Dsonar.projectBaseDir=database ^
-                            -Dsonar.java.binaries=build\\classes\\java\\main ^  // Use \\ for backslashes in Windows paths
+                            -Dsonar.java.binaries=build\\classes\\java\\main ^
                             -Dsonar.login=$SONAR_TOKEN ^
                             -X
             """
