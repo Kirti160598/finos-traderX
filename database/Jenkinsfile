@@ -23,13 +23,13 @@ pipeline {
         }
        stage('SonarQube Analysis') {
           steps {
-            sh 'cd database'
-            withSonarQubeEnv(SONARQUBE_SERVER) {
+            dir('database') {
+             withSonarQubeEnv(SONARQUBE_SERVER) {
                 script {
                     def scannerHome = tool 'DefaultSonarScanner'
                     bat "${scannerHome}\\bin\\sonar-scanner.bat"
     }
-}
+}}
      }
     }
       stage('Container Scanning') {
