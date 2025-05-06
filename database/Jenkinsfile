@@ -26,23 +26,24 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv(SONARQUBE_SERVER) {
-                    script {
-                        def scannerHome = tool 'DefaultSonarScanner'
-                        // Run sonar-scanner with properties such as project key, name, version, and authentication token
+           steps {
+            withSonarQubeEnv('SONARQUBE_SERVER') {
+                script {
+                    def scannerHome = tool 'DefaultSonarScanner'
+                    // Run sonar-scanner with properties such as project key, name, version, and authentication token
                         bat """
-                            "${scannerHome}\\bin\\sonar-scanner.bat" -Dsonar.projectKey=$SONAR_PROJECT_KEY 
-                            -Dsonar.projectName=$SONAR_PROJECT_NAME 
-                            -Dsonar.projectVersion=$SONAR_PROJECT_VERSION 
-                            -Dsonar.projectBaseDir=database 
-                            -Dsonar.java.binaries=build/classes/java/main  // Specify the path for compiled classes
-                            -Dsonar.login=$SONAR_TOKEN 
+                            "${scannerHome}\\bin\\sonar-scanner.bat" -Dsonar.projectKey=$SONAR_PROJECT_KEY ^
+                            -Dsonar.projectName=$SONAR_PROJECT_NAME ^
+                            -Dsonar.projectVersion=$SONAR_PROJECT_VERSION ^
+                            -Dsonar.projectBaseDir=database ^
+                            -Dsonar.java.binaries=build\\classes\\java\\main ^  // Use \\ for backslashes in Windows paths
+                            -Dsonar.login=$SONAR_TOKEN ^
                             -X
-                        """
-                    }
-                }
-            }
+            """
+        }
+    }
+}
+
         }
         stage('Container Scanning') {
             steps {
