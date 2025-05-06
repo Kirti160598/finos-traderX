@@ -5,6 +5,10 @@ pipeline {
         DOCKER_IMAGE = "kirtigupta1234/finos-traderx:${BUILD_NUMBER}"   
         GITOPS_REPO = "https://github.com/Kirti160598/finos-traderX.git"
         SONARQUBE_SERVER = "SonarQube"
+        SONAR_PROJECT_KEY = "finos-traderX_database"
+        SONAR_PROJECT_NAME = "FinosTraderX"
+        SONAR_PROJECT_VERSION = "${BUILD_NUMBER}"
+        SONAR_TOKEN = "sqa_5893c6f02975c5ed496251434168aa4574294478"
     }
 
     stages {
@@ -21,24 +25,29 @@ pipeline {
                 }
             }
         }
-       stage('SonarQube Analysis') {
-          steps {
-             withSonarQubeEnv(SONARQUBE_SERVER) {
-                script {
-                    def scannerHome = tool 'DefaultSonarScanner'
-                    // Run sonar-scanner with -Dsonar.projectBaseDir set to 'database' directory for Windows
-                    bat "\"${scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.projectBaseDir=database -X"
-
-                        }
-    
-}}
-     }
-    
-      stage('Container Scanning') {
-        steps {
-          sh 'trivy image $DOCKER_IMAGE'
-      }
-    }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv(SONARQUBE_SERVER) {
+                    script {
+                        def scannerHome = tool 'DefaultSonarScanner'
+                        // Run sonar-scanner with properties such as project key, name, version, and authentication token
+                        bat """
+                            "${scannerHome}\\bin\\sonar-scanner.bat" -Dsonar.projectKey=$SONAR_PROJECT_KEY 
+                            -Dsonar.projectName=$SONAR_PROJECT_NAME 
+                            -Dsonar.projectVersion=$SONAR_PROJECT_VERSION 
+                            -Dsonar.projectBaseDir=database 
+                            -Dsonar.login=$SONAR_TOKEN 
+                            -X
+                        """
+                    }
+                }
+            }
+        }
+        stage('Container Scanning') {
+            steps {
+                sh 'trivy image $DOCKER_IMAGE'
+            }
+        }
 
         stage('Push Docker Image') {
             steps {
@@ -64,8 +73,3 @@ pipeline {
         }
     }
 }
-
-
-
-
-
