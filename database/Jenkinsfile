@@ -27,7 +27,8 @@ pipeline {
                 script {
                     def scannerHome = tool 'DefaultSonarScanner'
                     // Run sonar-scanner with -Dsonar.projectBaseDir set to 'database' directory for Windows
-                    bat "\"${scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.projectBaseDir=database"
+                    bat "\"${scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.projectBaseDir=database -X"
+
                         }
     
 }}
