@@ -23,15 +23,16 @@ pipeline {
         }
        stage('SonarQube Analysis') {
           steps {
-            dir('database') {
              withSonarQubeEnv(SONARQUBE_SERVER) {
                 script {
                     def scannerHome = tool 'DefaultSonarScanner'
-                    bat "${scannerHome}\\bin\\sonar-scanner.bat"
-    }
+                    // Run sonar-scanner with -Dsonar.projectBaseDir set to 'database' directory for Windows
+                    bat "\"${scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.projectBaseDir=database"
+                        }
+    
 }}
      }
-    }
+    
       stage('Container Scanning') {
         steps {
           sh 'trivy image $DOCKER_IMAGE'
