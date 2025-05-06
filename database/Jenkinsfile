@@ -23,7 +23,7 @@ pipeline {
         }
        stage('SonarQube Analysis') {
           steps {
-            sh ' $PWD'
+            sh 'cd database'
             withSonarQubeEnv(SONARQUBE_SERVER) {
                 script {
                     def scannerHome = tool 'DefaultSonarScanner'
