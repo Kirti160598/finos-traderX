@@ -1,18 +1,5 @@
 pipeline {
     agent any
-
-    parameters {
-        activeChoice(
-            name: 'SERVICES',
-            description: 'Select microservices to scan',
-            choiceType: 'CHECKBOX',
-            script: [
-                script: 'return ["all", "database", "reference-data", "trade-processor", "trade-feed"]',
-                fallbackScript: 'return ["none"]'
-            ]
-        )
-    }
-
     environment {
         DOCKER_IMAGE = "kirtigupta1234/finos-traderx:${BUILD_NUMBER}"
         GITOPS_REPO = "https://github.com/Kirti160598/finos-traderX.git"
