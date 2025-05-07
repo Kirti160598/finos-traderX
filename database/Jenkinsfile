@@ -47,7 +47,7 @@ pipeline {
           }
 
                    selectedServices.each { service ->
-                      echo "Running SonarQube for ${service}"
+                      echo "Running SonarQube for ${service}"}
                         bat """
                             "${scannerHome}\\bin\\sonar-scanner.bat" -Dsonar.projectKey=$SONAR_PROJECT_KEY ^
                             -Dsonar.projectName=$SONAR_PROJECT_NAME ^
