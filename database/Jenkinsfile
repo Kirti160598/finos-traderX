@@ -42,7 +42,7 @@ pipeline {
                             def projectKey = "finos-traderX_${service}"
                             def projectBaseDir = "${service}"
 
-                            sh """
+                            bat """
                                 ${scannerHome}/bin/sonar-scanner \
                                 -Dsonar.projectKey=${projectKey} \
                                 -Dsonar.projectName=${SONAR_PROJECT_NAME} \
