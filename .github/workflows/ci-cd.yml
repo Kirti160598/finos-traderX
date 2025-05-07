@@ -34,17 +34,17 @@ jobs:
     - name: Build and push Docker image
       run: |
         TAG=latest-$(date +%s)
-        docker build -t $IMAGE_NAME:$TAG ./app
+        docker build -t $IMAGE_NAME:$TAG ./database
         docker push $IMAGE_NAME:$TAG
 
         # Update deployment.yaml (tag line)
-        sed -i "s|image:.*|image: $IMAGE_NAME:$TAG|" k8s/deployment.yaml
+        sed -i "s|image:.*|image: $IMAGE_NAME:$TAG|" gitops/base/database/deployment.yaml
 
     - name: Commit updated deployment.yaml
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Update image tag to latest"
-        file_pattern: k8s/deployment.yaml
+        file_pattern: gitops/base/database/deployment.yaml
 
 
 
