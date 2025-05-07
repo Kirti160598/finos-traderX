@@ -6,7 +6,7 @@ pipeline {
             name: 'SERVICES',
             description: 'Select microservices to scan',
             choiceType: 'CHECKBOX',
-            groovyScript: [
+            script: [
                 script: 'return ["all", "database", "reference-data", "trade-processor", "trade-feed"]',
                 fallbackScript: 'return ["none"]'
             ]
