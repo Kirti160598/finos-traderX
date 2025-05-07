@@ -32,7 +32,7 @@ jobs:
     - name: Build and push Docker image
       run: |
         TAG=latest-$(date +%s)
-        docker build -t $IMAGE_NAME:$TAG .
+        docker build -t $IMAGE_NAME:$TAG -f ./database/Dockerfile
         docker push $IMAGE_NAME:$TAG
 
         # Update deployment.yaml (tag line)
