@@ -1,19 +1,20 @@
 pipeline {
     agent any
+
     parameters {
-    extendedChoice(
-      name: 'SERVICES',
-      type: 'PT_CHECKBOX',
-      description: 'Select microservices to scan',
-      multiSelectDelimiter: ',',
-      groovyScript: 'return ["all","database","reference-data", "trade-processor", "trade-feed"]'
-    )
-  }
+        extendedChoice(
+            name: 'SERVICES',
+            type: 'PT_CHECKBOX',
+            description: 'Select microservices to scan',
+            multiSelectDelimiter: ',',
+            groovyScript: 'return ["all", "database", "reference-data", "trade-processor", "trade-feed"]'
+        )
+    }
+
     environment {
-        DOCKER_IMAGE = "kirtigupta1234/finos-traderx:${BUILD_NUMBER}"   
+        DOCKER_IMAGE = "kirtigupta1234/finos-traderx:${BUILD_NUMBER}"
         GITOPS_REPO = "https://github.com/Kirti160598/finos-traderX.git"
         SONARQUBE_SERVER = "SonarQube"
-        SONAR_PROJECT_KEY = "finos-traderX_database"
         SONAR_PROJECT_NAME = "FinosTraderX"
         SONAR_PROJECT_VERSION = "${BUILD_NUMBER}"
         SONAR_TOKEN = "sqa_5893c6f02975c5ed496251434168aa4574294478"
@@ -28,40 +29,47 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                dir('database') {  // 👈 change working directory to 'database'
+                dir('database') {
                     sh 'docker build -t $DOCKER_IMAGE .'
                 }
             }
         }
+
         stage('SonarQube Analysis') {
-           steps {
-            withSonarQubeEnv(SONARQUBE_SERVER) {
-                script {
-                    def scannerHome = tool 'DefaultSonarScanner'
-                    // Run sonar-scanner with properties such as project key, name, version, and authentication token
-                    def allServices = ['database','reference-data', 'trade-processor', 'trade-feed'] // <-- full list here
-                    def selectedServices = params.SERVICES.split(',')
+            steps {
+                withSonarQubeEnv(SONARQUBE_SERVER) {
+                    script {
+                        def scannerHome = tool 'DefaultSonarScanner'
+                        def allServices = ['database', 'reference-data', 'trade-processor', 'trade-feed']
+                        def selectedServices = params.SERVICES.split(',')
 
-                    if (selectedServices.contains('all')) {
-                      selectedServices = allServices
-          }
+                        if (selectedServices.contains('all')) {
+                            selectedServices = allServices
+                        }
 
-                   selectedServices.each { service ->
-                      echo "Running SonarQube for ${service}"}
-                        bat """
-                            "${scannerHome}\\bin\\sonar-scanner.bat" -Dsonar.projectKey=$SONAR_PROJECT_KEY ^
-                            -Dsonar.projectName=$SONAR_PROJECT_NAME ^
-                            -Dsonar.projectVersion=$SONAR_PROJECT_VERSION ^
-                            -Dsonar.projectBaseDir=database ^
-                            -Dsonar.java.binaries=build\\classes\\java\\main ^
-                            -Dsonar.login=$SONAR_TOKEN ^
-                            -X
-            """
+                        selectedServices.each { service ->
+                            echo "Running SonarQube analysis for ${service}"
+
+                            // Dynamically set project key and base directory
+                            def projectKey = "finos-traderX_${service}"
+                            def projectBaseDir = "${service}"
+
+                            bat """
+                                "${scannerHome}\\bin\\sonar-scanner.bat" ^
+                                -Dsonar.projectKey=${projectKey} ^
+                                -Dsonar.projectName=${SONAR_PROJECT_NAME} ^
+                                -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} ^
+                                -Dsonar.projectBaseDir=${projectBaseDir} ^
+                                -Dsonar.java.binaries=build\\classes\\java\\main ^
+                                -Dsonar.login=${SONAR_TOKEN} ^
+                                -X
+                            """
+                        }
+                    }
+                }
+            }
         }
-    }
-}
 
-        }
         stage('Container Scanning') {
             steps {
                 sh 'trivy image $DOCKER_IMAGE'
@@ -79,7 +87,7 @@ pipeline {
 
         stage('Update GitOps Deployment YAML') {
             steps {
-                dir('database') {  // 👈 update deployment.yaml inside 'database'
+                dir('database') {
                     sh '''
                         echo "Current Directory: $(pwd)"
                         sed -i "s|image: .*|image: $DOCKER_IMAGE|" deployment.yaml
