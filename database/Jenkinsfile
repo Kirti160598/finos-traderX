@@ -1,7 +1,13 @@
 pipeline {
     agent any
     parameters {
-    choice(name: 'SERVICE', choices: ['database', 'reference-data', 'position-service'], description: 'Select the microservice')
+    extendedChoice(
+      name: 'SERVICES',
+      type: 'PT_CHECKBOX',
+      description: 'Select microservices to scan',
+      multiSelectDelimiter: ',',
+      groovyScript: 'return ["all","database","reference-data", "trade-processor", "trade-feed"]'
+    )
   }
     environment {
         DOCKER_IMAGE = "kirtigupta1234/finos-traderx:${BUILD_NUMBER}"   
@@ -33,6 +39,15 @@ pipeline {
                 script {
                     def scannerHome = tool 'DefaultSonarScanner'
                     // Run sonar-scanner with properties such as project key, name, version, and authentication token
+                    def allServices = ['database','reference-data', 'trade-processor', 'trade-feed'] // <-- full list here
+                    def selectedServices = params.SERVICES.split(',')
+
+                    if (selectedServices.contains('all')) {
+                      selectedServices = allServices
+          }
+
+                   selectedServices.each { service ->
+                      echo "Running SonarQube for ${service}"
                         bat """
                             "${scannerHome}\\bin\\sonar-scanner.bat" -Dsonar.projectKey=$SONAR_PROJECT_KEY ^
                             -Dsonar.projectName=$SONAR_PROJECT_NAME ^
