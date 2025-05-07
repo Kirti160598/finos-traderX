@@ -2,12 +2,14 @@ pipeline {
     agent any
 
     parameters {
-        extendedChoice(
+        activeChoice(
             name: 'SERVICES',
-            type: 'PT_CHECKBOX',
             description: 'Select microservices to scan',
-            multiSelectDelimiter: ',',
-            groovyScript: 'return ["all", "database", "reference-data", "trade-processor", "trade-feed"]'
+            choiceType: 'CHECKBOX',
+            groovyScript: [
+                script: 'return ["all", "database", "reference-data", "trade-processor", "trade-feed"]',
+                fallbackScript: 'return ["none"]'
+            ]
         )
     }
 
@@ -41,7 +43,7 @@ pipeline {
                     script {
                         def scannerHome = tool 'DefaultSonarScanner'
                         def allServices = ['database', 'reference-data', 'trade-processor', 'trade-feed']
-                        def selectedServices = params.SERVICES.split(',')
+                        def selectedServices = params.SERVICES.tokenize(',')
 
                         if (selectedServices.contains('all')) {
                             selectedServices = allServices
@@ -50,18 +52,17 @@ pipeline {
                         selectedServices.each { service ->
                             echo "Running SonarQube analysis for ${service}"
 
-                            // Dynamically set project key and base directory
                             def projectKey = "finos-traderX_${service}"
                             def projectBaseDir = "${service}"
 
-                            bat """
-                                "${scannerHome}\\bin\\sonar-scanner.bat" ^
-                                -Dsonar.projectKey=${projectKey} ^
-                                -Dsonar.projectName=${SONAR_PROJECT_NAME} ^
-                                -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} ^
-                                -Dsonar.projectBaseDir=${projectBaseDir} ^
-                                -Dsonar.java.binaries=build\\classes\\java\\main ^
-                                -Dsonar.login=${SONAR_TOKEN} ^
+                            sh """
+                                ${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.projectKey=${projectKey} \
+                                -Dsonar.projectName=${SONAR_PROJECT_NAME} \
+                                -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
+                                -Dsonar.projectBaseDir=${projectBaseDir} \
+                                -Dsonar.java.binaries=build/classes/java/main \
+                                -Dsonar.login=${SONAR_TOKEN} \
                                 -X
                             """
                         }
