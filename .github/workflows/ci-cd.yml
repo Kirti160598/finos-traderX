@@ -1,0 +1,51 @@
+name: CI/CD with Docker + FluxCD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'database/**'
+      - '.github/workflows/**'
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/github-flux-database
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+          token: ${{ secrets.GH_TOKEN }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      run: |
+        TAG=latest-$(date +%s)
+        docker build -t $IMAGE_NAME:$TAG ./app
+        docker push $IMAGE_NAME:$TAG
+
+        # Update deployment.yaml (tag line)
+        sed -i "s|image:.*|image: $IMAGE_NAME:$TAG|" k8s/deployment.yaml
+
+    - name: Commit updated deployment.yaml
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Update image tag to latest"
+        file_pattern: k8s/deployment.yaml
+
+
+
+        
