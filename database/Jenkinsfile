@@ -3,6 +3,10 @@ pipeline {
     environment {
         DOCKER_IMAGE = "kirtigupta1234/finos-traderx:${BUILD_NUMBER}"
         GITOPS_REPO = "https://github.com/Kirti160598/finos-traderX.git"
+        SONARQUBE_SERVER = "SonarQube"
+        SONAR_PROJECT_NAME = "FinosTraderX"
+        SONAR_PROJECT_VERSION = "${BUILD_NUMBER}"
+        SONAR_TOKEN = "sqa_5893c6f02975c5ed496251434168aa4574294478"
     }
 
     stages {
