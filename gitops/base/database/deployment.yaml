@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: database-app
-        image: ghcr.io/finos/traderx/database
+        image: kirtigupta1234/github-flux-database:latest-1746608187
         imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 18082
