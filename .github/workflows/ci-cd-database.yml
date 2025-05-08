@@ -1,4 +1,4 @@
-name: CI/CD with Docker + FluxCD
+name: CI/CD with Docker + FluxCD     
 on:
   push:
     branches:
