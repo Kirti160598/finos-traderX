@@ -8,7 +8,6 @@ pipeline {
         SONAR_PROJECT_VERSION = "${BUILD_NUMBER}"
         SONAR_TOKEN = "sqa_5893c6f02975c5ed496251434168aa4574294478"
     }
-
     stages {
         stage('Checkout App') {
             steps {
