@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: database
-  metadata: database-flux
+  namespace: database-flux
 spec:
   selector:
     app: database
