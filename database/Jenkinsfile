@@ -53,7 +53,6 @@ pipeline {
         }
       stage('Install Security Tools') {
             steps {
-                # Install Checkov
                 pip install --user checkov
                 export PATH=$PATH:$HOME/.local/bin
         '''
@@ -67,7 +66,7 @@ pipeline {
 }
        stage('Run Compliance Checks') {
             steps {
-                sh 'checkov -d . --output json > checkov-report.json'
+                bat 'checkov -d . --output json > checkov-report.json'
     }
 }
 
