@@ -56,21 +56,31 @@ pipeline {
                 }
             }
         }
-
-        stage('Container Scanning') {
+        stage('Install Security Tools') {
             steps {
-                sh 'trivy image $DOCKER_IMAGE'
-            }
-        }
+                sh '''
+            # Install Trivy
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+            sudo mv trivy /usr/local/bin/
 
-
-       stage('Run Compliance Checks') {
-        steps {
-            sh 'checkov -d .'
+            # Install Checkov
+            pip install --user checkov
+            export PATH=$PATH:$HOME/.local/bin
+        '''
     }
 }
 
+        stage('Scan Docker Image') {
+            steps {
+                sh 'trivy image --format json -o trivy-report.json $DOCKER_IMAGE'
+    }
+}
 
+       stage('Run Compliance Checks') {
+            steps {
+                sh 'checkov -d . --output json > checkov-report.json'
+    }
+}
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
