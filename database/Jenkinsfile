@@ -51,11 +51,12 @@ pipeline {
                 }
             }
         }
-      stage('Install Security Tools') {
-            steps {
-                pip install --user checkov
-                export PATH=$PATH:$HOME/.local/bin
-        
+     stage('Install Security Tools') {
+        steps {
+            bat '''
+            pip install --user checkov
+            set PATH=%PATH%;%USERPROFILE%\\AppData\\Roaming\\Python\\Python313\\Scripts 
+        '''
     }
 }
         stage('Scan Docker Image') {
