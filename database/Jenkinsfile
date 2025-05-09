@@ -55,7 +55,7 @@ pipeline {
             steps {
                 pip install --user checkov
                 export PATH=$PATH:$HOME/.local/bin
-        '''
+        
     }
 }
         stage('Scan Docker Image') {
