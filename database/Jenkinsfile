@@ -56,7 +56,7 @@ pipeline {
                 sh '''
             # Install Trivy
             curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
-            sudo mv trivy /usr/local/bin/
+            mv trivy /usr/local/bin/
 
             # Install Checkov
             pip install --user checkov
