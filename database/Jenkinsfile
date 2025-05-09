@@ -63,6 +63,14 @@ pipeline {
             }
         }
 
+
+       stage('Run Compliance Checks') {
+        steps {
+            sh 'checkov -d .'
+    }
+}
+
+
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
