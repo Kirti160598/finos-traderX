@@ -7,6 +7,11 @@ metadata:
     app: database
 spec:
   replicas: 2
+  strategy:
+        type: RollingUpdate
+        rollingUpdate:
+           maxUnavailable: 1
+           maxSurge: 1
   selector:
     matchLabels:
       app: database
@@ -26,3 +31,5 @@ spec:
             protocol: TCP
           - containerPort: 18084
             protocol: TCP
+      
+
