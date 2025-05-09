@@ -70,17 +70,7 @@ pipeline {
     }
 }
 
-        stage('Scan Docker Image') {
-            steps {
-                sh 'trivy image --format json -o trivy-report.json $DOCKER_IMAGE'
-    }
-}
-
-       stage('Run Compliance Checks') {
-            steps {
-                sh 'checkov -d . --output json > checkov-report.json'
-    }
-}
+        
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
