@@ -53,20 +53,16 @@ pipeline {
         }
       stage('Install Security Tools') {
             steps {
-                sh '''
-            # Install Trivy
-            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
-            mv trivy /usr/local/bin/
-
-            # Install Checkov
-            pip install --user checkov
-            export PATH=$PATH:$HOME/.local/bin
+                # Install Checkov
+                pip install --user checkov
+                export PATH=$PATH:$HOME/.local/bin
         '''
     }
 }
         stage('Scan Docker Image') {
             steps {
-                sh 'trivy image --format json -o trivy-report.json $DOCKER_IMAGE'
+                bat 'trivy --version'
+                bat 'trivy image --format json -o trivy-report.json $DOCKER_IMAGE'
     }
 }
        stage('Run Compliance Checks') {
