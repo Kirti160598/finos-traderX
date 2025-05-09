@@ -14,7 +14,6 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Kirti160598/finos-traderX.git'
             }
         }
-
         stage('Build Docker Image') {
             steps {
                 dir('database') {
@@ -22,7 +21,6 @@ pipeline {
                 }
             }
         }
-
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv(SONARQUBE_SERVER) {
@@ -30,17 +28,14 @@ pipeline {
                         def scannerHome = tool 'DefaultSonarScanner'
                         def allServices = ['database', 'reference-data', 'trade-processor', 'trade-feed']
                         def selectedServices = params.SERVICES.tokenize(',')
-
                         if (selectedServices.contains('all')) {
                             selectedServices = allServices
                         }
-
                         selectedServices.each { service ->
                             echo "Running SonarQube analysis for ${service}"
 
                             def projectKey = "finos-traderX_${service}"
                             def projectBaseDir = "${service}"
-
                             bat """
                                 ${scannerHome}/bin/sonar-scanner \
                                 -Dsonar.projectKey=${projectKey} \
@@ -69,9 +64,17 @@ pipeline {
         '''
     }
 }
-
-        
-        stage('Push Docker Image') {
+        stage('Scan Docker Image') {
+            steps {
+                sh 'trivy image --format json -o trivy-report.json $DOCKER_IMAGE'
+    }
+}
+       stage('Run Compliance Checks') {
+            steps {
+                sh 'checkov -d . --output json > checkov-report.json'
+    }
+}
+       stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
@@ -79,7 +82,6 @@ pipeline {
                 }
             }
         }
-
         stage('Update GitOps Deployment YAML') {
             steps {
                 dir('database') {
