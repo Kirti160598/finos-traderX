@@ -70,8 +70,7 @@ pipeline {
 }
        stage('Run Compliance Checks') {
             steps {
-                bat 'checkov -d . --output json > checkov-report.json'
-                
+                bat 'checkov --no-parallel -d . --output json > checkov-report.json'
     }
 }
 
