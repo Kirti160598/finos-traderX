@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: database-app
-        image: kirtigupta1234/github-flux-database:latest-1747738714
+        image: kirtigupta1234/github-flux-database:latest-1747739561
         imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 18082
