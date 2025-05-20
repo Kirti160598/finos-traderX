@@ -70,10 +70,7 @@ pipeline {
 }
        stage('Run Compliance Checks') {
             steps {
-                bat '''
-                   python -m checkov --no-parallel -d . --output json > checkov-report.json
-        '''
-
+                bat 'checkov -d . --output json > checkov-report.json'
     }
 }
 
