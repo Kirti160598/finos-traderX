@@ -62,7 +62,8 @@ pipeline {
         stage('Scan Docker Image') {
             steps {
                 bat 'trivy --version'
-                bat 'trivy image --format json -o trivy-report.json %DOCKER_IMAGE%'
+                bat 'trivy clean --java-db'
+                bat 'trivy image --timeout 10m --format json -o trivy-report.json %DOCKER_IMAGE%'
     }
 }
        stage('Run Compliance Checks') {
