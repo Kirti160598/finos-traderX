@@ -69,7 +69,6 @@ pipeline {
 }
        stage('Run Compliance Checks') {
             steps {
-                bat 'checkov --version'
                 bat 'checkov -d . --output json > checkov-report.json'
                 
     }
