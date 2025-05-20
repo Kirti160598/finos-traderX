@@ -56,7 +56,7 @@ pipeline {
             bat '''
             pip install --user checkov
             set PATH=%PATH%;%USERPROFILE%\\AppData\\Roaming\\Python\\Python313\\Scripts 
-            bat 'checkov --version'
+            checkov --version
         '''
     }
 }
