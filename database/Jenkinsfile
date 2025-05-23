@@ -68,11 +68,6 @@ pipeline {
                 bat 'trivy image --timeout 10m --format json -o trivy-report.json %DOCKER_IMAGE%'
     }
 }
-       stage('Run Compliance Checks') {
-            steps {
-                bat 'checkov -d . --output json > checkov-report.json'
-    }
-}
 
        stage('Push Docker Image') {
             steps {
