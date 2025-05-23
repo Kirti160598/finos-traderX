@@ -8,10 +8,10 @@ metadata:
 spec:
   replicas: 2
   strategy:
-        type: RollingUpdate
-        rollingUpdate:
-           maxUnavailable: 1
-           maxSurge: 1
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       app: database
@@ -19,6 +19,10 @@ spec:
     metadata:
       labels:
         app: database
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"     
+        prometheus.io/port: "18082"         
     spec:
       containers:
       - name: database-app
@@ -31,5 +35,3 @@ spec:
             protocol: TCP
           - containerPort: 18084
             protocol: TCP
-      
-
